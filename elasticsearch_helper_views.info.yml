@@ -1,6 +1,7 @@
 name: ElasticSearch Helper Views
 type: module
 description: Provides tools to integrate elasticsearch with Drupal Views.
+core_version_requirement: ^8 || ^9
 core: 8.x
 package: ElasticSearch Helper
 dependencies:
