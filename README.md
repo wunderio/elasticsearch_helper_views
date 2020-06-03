@@ -18,8 +18,8 @@ The following views field plugins are provided out of the box:
 
 ## Installation
 
-Elasticsearch Helper Viewss can be installed via the
-[standard Drupal installation process](http://drupal.org/node/895232).
+Elasticsearch Helper Views can be installed via the
+[standard Drupal installation process](https://www.drupal.org/docs/extending-drupal/installing-drupal-modules).
 
 ## Configuration
 
