@@ -11,6 +11,22 @@ The following views field plugins are provided out of the box:
 - `Rendered entity` plugin which displays rendered Drupal entities in pre-selected view mode per entity type; if Elasticsearch documents contain identification ID to other Drupal entities (e.g., author ID), `Rendered entity` plugin can be used to display entities of different types (together with provided views relationship plugin);
 - `Source` field plugin which displays raw values from the Elasticsearch document `_source` array.
 
+## Requirements
+
+* Drupal 8 or Drupal 9
+* [Elasticsearch Helper][elasticsearch_helper] module
+
+## Installation
+
+Elasticsearch Helper Viewss can be installed via the
+[standard Drupal installation process](http://drupal.org/node/895232).
+
+## Configuration
+
+* Install and enable [Elasticsearch Helper][elasticsearch_helper] module.
+* Install and enable [Elasticsearch Helper Views][elasticsearch_helper_views]
+  module.
+
 ## Usage
 
 1. Install `Elasticsearch` search engine ([how-to][elasticsearch_download]).
@@ -21,22 +37,7 @@ The following views field plugins are provided out of the box:
 4. In a view configuration form click on the _Query settings_ link and select the query building plugin that will generate Query DSL for this particular view.
 5. Save the view.
 
-## Composer
-
-Add the following snippet to `composer.json` file and run `composer require maijs/elasticsearch_helper_views` to have the module added to your project.
-
-```
-{
-    "repositories": [
-        {
-            "name": "maijs/elasticsearch_helper_views",
-            "type": "vcs",
-            "url": "https://github.com/maijs/elasticsearch_helper_views.git"
-        }
-    ]
-}
-```
-
 [elasticsearch_download]: https://www.elastic.co/downloads/elasticsearch
 [elasticsearch_helper]: https://www.drupal.org/project/elasticsearch_helper
+[elasticsearch_helper_views]: https://www.drupal.org/project/elasticsearch_helper_views
 [elasticsearch_client]: https://github.com/elastic/elasticsearch-php
