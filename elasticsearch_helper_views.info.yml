@@ -5,4 +5,4 @@ core_version_requirement: ^8 || ^9
 core: 8.x
 package: ElasticSearch Helper
 dependencies:
-  - elasticsearch_helper
+  - drupal:elasticsearch_helper
