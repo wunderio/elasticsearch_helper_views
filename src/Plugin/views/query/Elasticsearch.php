@@ -6,6 +6,7 @@ use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\elasticsearch_helper\ElasticsearchClientVersion;
 use Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderInterface;
 use Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderManager;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -340,7 +341,7 @@ class Elasticsearch extends QueryPluginBase {
     $view->result = $result;
 
     $view->pager->postExecute($view->result);
-    $view->pager->total_items = isset($data['hits']['total']) ? $data['hits']['total'] : 0;
+    $view->pager->total_items = $this->getTotalHits($data);
     // Account for offset when calculating total results.
     if (!empty($view->pager->options['offset'])) {
       // Make sure that total is never negative.
@@ -529,6 +530,24 @@ class Elasticsearch extends QueryPluginBase {
     }
 
     return $entities;
+  }
+
+  /**
+   * Returns total number of hits from the Elasticsearch result.
+   *
+   * @param array|object $data
+   *
+   * @return int
+   */
+  protected function getTotalHits($data) {
+    if (ElasticsearchClientVersion::getMajorVersion() >= 7) {
+      $total_items = isset($data['hits']['total']['value']) ? $data['hits']['total']['value'] : 0;
+    }
+    else {
+      $total_items = isset($data['hits']['total']) ? $data['hits']['total'] : 0;
+    }
+
+    return $total_items;
   }
 
   /**
