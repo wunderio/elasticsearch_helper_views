@@ -68,5 +68,13 @@ function elasticsearch_helper_views_views_data() {
     ],
   ];
 
+  $data['elasticsearch_result']['bulk_form'] = [
+    'field' => [
+      'title' => t('Bulk form'),
+      'help' => t('Provides bulk form to perform operation on Elasticsearch documents.'),
+      'id' => 'elasticsearch_bulk_form',
+    ],
+  ];
+
   return $data;
 }

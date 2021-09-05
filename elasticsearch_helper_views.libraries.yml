@@ -4,3 +4,13 @@ debug:
     js/debug.js : {}
   dependencies:
     - core/drupal
+admin-views:
+  version: VERSION
+  js:
+    js/bulk-form.js: {}
+  css:
+    theme:
+      css/admin-views.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal.tableselect

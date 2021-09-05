@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - elasticsearch_helper_views
+id: elasticsearch_document_delete
+label: 'Delete'
+type: elasticsearch_helper
+plugin: elasticsearch_document_delete
+configuration: {  }
