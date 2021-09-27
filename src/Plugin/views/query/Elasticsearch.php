@@ -540,14 +540,7 @@ class Elasticsearch extends QueryPluginBase {
    * @return int
    */
   protected function getTotalHits($data) {
-    if (ElasticsearchClientVersion::getMajorVersion() >= 7) {
-      $total_items = isset($data['hits']['total']['value']) ? $data['hits']['total']['value'] : 0;
-    }
-    else {
-      $total_items = isset($data['hits']['total']) ? $data['hits']['total'] : 0;
-    }
-
-    return $total_items;
+    return $data['hits']['total']['value'] ?? 0;
   }
 
   /**
