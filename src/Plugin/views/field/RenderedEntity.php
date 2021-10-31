@@ -17,6 +17,7 @@ use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 
 /**
  * Provides a field handler which renders an entity in a certain view mode.
@@ -41,6 +42,10 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
   /** @var string $entityResultProperty */
   protected $entityResultProperty = 'search_result';
 
+
+  /** @var string $entityResultProperty */
+  protected $entityRepository;
+
   /**
    * RenderedEntity constructor.
    *
@@ -50,13 +55,15 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    * @param \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display_repository
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface entity_repositor
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_manager, LanguageManagerInterface $language_manager, EntityDisplayRepositoryInterface $entity_display_repository) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, EntityTypeManagerInterface $entity_manager, LanguageManagerInterface $language_manager, EntityDisplayRepositoryInterface $entity_display_repository, EntityRepositoryInterface $entity_repositor) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->entityTypeManager = $entity_manager;
     $this->languageManager = $language_manager;
     $this->entityDisplayRepository = $entity_display_repository;
+    $this->entityRepository = $entity_repositor;
   }
 
   /**
@@ -69,7 +76,8 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
       $plugin_definition,
       $container->get('entity_type.manager'),
       $container->get('language_manager'),
-      $container->get('entity_display.repository')
+      $container->get('entity_display.repository'),
+      $container->get('entity.repository')
     );
   }
 
@@ -317,6 +325,16 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
    */
   protected function getView() {
     return $this->view;
+  }
+
+  /**
+  * Returns the entity repository.
+  *
+  * @return \Drupal\Core\Entity\EntityRepositoryInterface
+  *   The entity repository.
+  */
+ protected function getEntityRepository() {
+     return \Drupal::service('entity.repository');
   }
 
 }
