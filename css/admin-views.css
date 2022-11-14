@@ -1,0 +1,20 @@
+div.select-all-markup {
+  display: none;
+}
+
+tr.views-table-row-select-all {
+  display: none;
+}
+
+span.select-this-page-button {
+  display: none;
+}
+
+tr.views-table-row-select-all td {
+  text-align: center;
+  /*font-size: smaller;*/
+}
+
+tr.views-table-row-select-all td input[type="submit"] {
+  /*font-size: smaller;*/
+}
