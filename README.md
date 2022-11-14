@@ -13,7 +13,7 @@ The following views field plugins are provided out of the box:
 
 ## Requirements
 
-* Drupal 8 or Drupal 9
+* Drupal > 9.4
 * [Elasticsearch Helper][elasticsearch_helper] module
 
 ## Installation
