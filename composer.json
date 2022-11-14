@@ -1,17 +1,9 @@
 {
     "name": "drupal/elasticsearch_helper_views",
-    "type": "drupal-module",
     "description": "Provides tools to integrate elasticsearch with Drupal Views.",
-    "homepage": "http://drupal.org/project/elasticsearch_helper_views",
+    "type": "drupal-module",
     "license": "GPL-2.0+",
-    "authors": [
-        {
-            "name": "Raimonds Kalnins",
-            "email": "raimonds.kalnins@wunder.io"
-        }
-    ],
     "require": {
         "drupal/elasticsearch_helper": "^7"
-    },
-    "minimum-stability": "dev"
+    }
 }

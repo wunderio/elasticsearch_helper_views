@@ -10,7 +10,7 @@ use Drupal\elasticsearch_helper_views\Plugin\views\query\Elasticsearch;
 use Drupal\views\Ajax\ViewAjaxResponse;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -45,9 +45,9 @@ class AjaxResponseSubscriber implements EventSubscriberInterface {
   /**
    * Prints Elasticsearch query to console for debugging.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    */
-  public function onResponse(FilterResponseEvent $event) {
+  public function onResponse(ResponseEvent $event) {
     // Do nothing if use does not have permission to administer views.
     if (!$this->currentUser->hasPermission('administer views')) {
       return;
