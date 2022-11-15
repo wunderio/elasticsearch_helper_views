@@ -8,7 +8,7 @@ use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
-use Elasticsearch\Client;
+use Elastic\Elasticsearch\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -92,7 +92,7 @@ class Delete extends ConfigurableActionBase implements ContainerFactoryPluginInt
   public function executeMultiple(array $documents) {
     // @todo Use bulk requests for documents in the same index.
     foreach ($documents as $document) {
-      if (isset($document['index'], $document['type'], $document['id'])) {
+      if (isset($document['index'], $document['id'])) {
         $this->client->delete($document);
       }
     }

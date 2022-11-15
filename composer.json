@@ -4,6 +4,6 @@
     "type": "drupal-module",
     "license": "GPL-2.0+",
     "require": {
-        "drupal/elasticsearch_helper": "^7"
+        "drupal/elasticsearch_helper": "^8"
     }
 }

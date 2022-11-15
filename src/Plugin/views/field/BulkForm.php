@@ -570,7 +570,6 @@ class BulkForm extends FieldPluginBase {
   protected function getIdKeyFromRow(ResultRow $row) {
     return [
       'index' => $row->_index,
-      'type' => $row->_type,
       'id' => $row->_id,
     ];
   }

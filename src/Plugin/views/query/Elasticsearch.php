@@ -14,7 +14,7 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ResultRow;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Elasticsearch\Client;
+use Elastic\Elasticsearch\Client;
 
 /**
  * Views query plugin for an Elasticsearch query.
@@ -29,16 +29,24 @@ use Elasticsearch\Client;
  */
 class Elasticsearch extends QueryPluginBase {
 
-  /** @var \Elasticsearch\Client $elasticsearchClient */
+  /**
+   * @var \Elastic\Elasticsearch\Client
+   */
   protected $elasticsearchClient;
 
-  /** @var  EntityTypeManagerInterface $entityTypeManager */
+  /**
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
   protected $entityTypeManager;
 
-  /** @var \Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderManager $elasticsearchQueryBuilderManager */
+  /**
+   * @var \Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderManager
+   */
   protected $elasticsearchQueryBuilderManager;
 
-  /** @var \Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderInterface $queryBuilder */
+  /**
+   * @var \Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderInterface
+   */
   protected $queryBuilder;
 
   /**
@@ -47,7 +55,7 @@ class Elasticsearch extends QueryPluginBase {
    * @param array $configuration
    * @param string $plugin_id
    * @param mixed $plugin_definition
-   * @param \Elasticsearch\Client $elasticsearch_client
+   * @param \Elastic\Elasticsearch\Client $elasticsearch_client
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    * @param \Drupal\elasticsearch_helper_views\ElasticsearchQueryBuilderManager $query_builder_manager
    */
@@ -291,7 +299,7 @@ class Elasticsearch extends QueryPluginBase {
    * @return array
    */
   public function executeQuery(array $query) {
-    return $this->elasticsearchClient->search($query);
+    return $this->elasticsearchClient->search($query)->asArray();
   }
 
   /**
