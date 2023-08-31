@@ -1,6 +1,6 @@
 {
     "name": "drupal/elasticsearch_helper_views",
-    "description": "Provides tools to integrate elasticsearch with Drupal Views.",
+    "description": "Provides tools to integrate Elasticsearch with Drupal Views module.",
     "type": "drupal-module",
     "license": "GPL-2.0+",
     "require": {
