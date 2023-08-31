@@ -265,6 +265,7 @@ class RenderedEntity extends FieldPluginBase implements CacheableDependencyInter
     $view_display_storage = $this->entityTypeManager->getStorage('entity_view_display');
     $view_displays = $view_display_storage->loadMultiple($view_display_storage
       ->getQuery()
+      ->accessCheck(TRUE)
       ->condition('targetEntityType', $this->getEntityTypeId())
       ->execute());
 
