@@ -25,7 +25,7 @@ class Source extends FieldPluginBase {
   public function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['source_field'] = ['default' => ''];
+    $options['source_field'] = ['default' => $this->definition['source_field'] ?? ''];
 
     return $options;
   }
