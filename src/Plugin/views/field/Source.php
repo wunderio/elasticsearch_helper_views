@@ -16,7 +16,11 @@ use Drupal\views\ResultRow;
  */
 class Source extends FieldPluginBase {
 
-  /** @var string $nestedValueSeparator */
+  /**
+   * The nested value separator.
+   *
+   * @var string
+   */
   protected $nestedValueSeparator = '.';
 
   /**
@@ -82,15 +86,105 @@ class Source extends FieldPluginBase {
    * @return mixed|null
    */
   protected function getNestedValue($key, array $data = [], $default = '') {
-    $parts = explode($this->nestedValueSeparator, $key);
+    $parents = explode($this->nestedValueSeparator, $key);
 
-    if (count($parts) == 1) {
-      return isset($data[$key]) ? $data[$key] : $default;
+    $flattened_data = $this->simplifyData($data);
+    $result = NestedArray::getValue($flattened_data, $parents, $key_exists);
+
+    if (is_array($result)) {
+      $result = implode(', ', $result);
     }
-    else {
-      $value = NestedArray::getValue($data, $parts, $key_exists);
-      return $key_exists ? $value : $default;
+
+    return $result != '' ? $result : $default;
+  }
+
+  /**
+   * Simplifies the data array.
+   *
+   * Each field in Elasticsearch document can have one of more values, including
+   * nested or object fields. To simplify the data extraction, this method
+   * groups all field values, including multiple values, into a single value
+   * array.
+   *
+   * Example:
+   *
+   * Field definition:
+   *
+   * 'family_field' => FieldDefinition::create('object')
+   *   ->addProperty('first_name', FieldDefinition::create('text'))
+   *   ->addProperty('last_name', FieldDefinition::create('text'))
+   *   ->addProperty('family', FieldDefinition::create('object')
+   *     ->addProperty('family_name', FieldDefinition::create('text'))
+   * );
+   *
+   * Data:
+   *
+   * $data = [
+   *   'family_field' => [
+   *     [
+   *       'first_name' => 'John',
+   *       'last_name' => 'Doe',
+   *       'family' => [
+   *         [
+   *           'family_name' => ['Doe', 'Jones'],
+   *         ],
+   *         [
+   *           'family_name' => ['Smith', 'Robertson'],
+   *         ]
+   *       ],
+   *     ],
+   *     [
+   *       'first_name' => ['James', 'Jacob'],
+   *       'last_name' => ['Bradly'],
+   *       'family' => [
+   *         'family_name' => 'Dove',
+   *       ],
+   *     ],
+   *   ],
+   * ];
+   *
+   * Result:
+   *
+   * $result = [
+   *   'family_field' => [
+   *     'first_name' => ['John', 'James', 'Jacob'],
+   *     'last_name' => ['Doe', 'Bradly'],
+   *     'family' => [
+   *       'family_name' => ['Doe', 'Jones', 'Smith', 'Robertson', 'Dove'],
+   *     ],
+   *   ],
+   * ];
+   *
+   *
+   * @param array $data
+   * @param array $parent
+   * @param array $result
+   *
+   * @return array
+   */
+  protected function simplifyData(array $data, array $parent = [], array $result = []) {
+    foreach ($data as $key => $value) {
+      // Do not include the numeric keys in parents array.
+      if (is_numeric($key)) {
+        $new_parents = $parent;
+      }
+      else {
+        $new_parents = array_merge($parent, [$key]);
+      }
+
+      if (is_array($value)) {
+        $result = array_merge($result, $this->simplifyData($value, $new_parents, $result));
+      }
+      else {
+        // Get existing value.
+        $existing_value = &NestedArray::getValue($result, $new_parents, $key_exists);
+        // Set the value into the resulting array.
+        $existing_value[] = $value;
+        NestedArray::setValue($result, $new_parents, $existing_value);
+      }
     }
+
+    return $result;
   }
 
 }
