@@ -7,3 +7,6 @@ services:
     arguments: ['@current_user', '@config.factory']
     tags:
       - { name: event_subscriber }
+  elasticsearch_helper_views.views_data:
+    class: Drupal\elasticsearch_helper_views\ViewsData
+    arguments: ['@plugin.manager.elasticsearch_index.processor', '@entity_type.manager', '@entity_field.manager', '@language_manager']

@@ -67,5 +67,8 @@ function elasticsearch_helper_views_views_data() {
     ],
   ];
 
-  return $data;
+  /** @var \Drupal\elasticsearch_helper_views\ViewsData $views_data_service */
+  $views_data_service = \Drupal::service('elasticsearch_helper_views.views_data');
+
+  return NestedArray::mergeDeep($data, $views_data_service->getViewsData());
 }
