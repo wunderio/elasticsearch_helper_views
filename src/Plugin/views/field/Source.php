@@ -2,9 +2,7 @@
 
 namespace Drupal\elasticsearch_helper_views\Plugin\views\field;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
 
 /**
@@ -13,11 +11,25 @@ use Drupal\views\ResultRow;
  * @ingroup views_field_handlers
  *
  * @ViewsField("elasticsearch_source")
+ *
+ * @deprecated Use the '\Drupal\elasticsearch_helper_views\Plugin\views\field\DocumentField'
+ * field instead.
  */
-class Source extends FieldPluginBase {
+class Source extends DocumentField {
 
-  /** @var string $nestedValueSeparator */
+  /**
+   * The nested value separator.
+   *
+   * @var string
+   */
   protected $nestedValueSeparator = '.';
+
+  /**
+   * The source field prefix.
+   *
+   * @var string
+   */
+  protected $prefix = '_source.';
 
   /**
    * {@inheritdoc}
@@ -26,6 +38,7 @@ class Source extends FieldPluginBase {
     $options = parent::defineOptions();
 
     $options['source_field'] = ['default' => $this->definition['source_field'] ?? ''];
+    unset($options['field_name']);
 
     return $options;
   }
@@ -36,25 +49,28 @@ class Source extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $t_args_description = ['@separator' => $this->nestedValueSeparator, '@example' => implode($this->nestedValueSeparator, ['abc', 'xyz'])];
-    $form['source_field'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Source field'),
-      '#description' => $this->t('Enter the key in the "_source" field. For nested fields separate the fields with a separator ("@separator"). Example: @example', $t_args_description),
-      '#required' => TRUE,
-      '#default_value' => $this->options['source_field']
-    ];
+    // Copy the "field_name" element to the "source_field" element.
+    $form['source_field'] = $form['field_name'];
+
+    $form['source_field']['#description'] = $this->t('Enter the key in the "_source" field. For nested fields separate the fields with a separator ("@separator"). Example: @example', [
+      '@separator' => '.',
+      '@example' => 'abc.xyz',
+    ]);
+
+    $form['source_field']['#default_value'] = $this->options['source_field'];
+    // Remove the "field_name" element.
+    unset($form['field_name']);
   }
 
   /**
    * {@inheritdoc}
    */
   public function adminLabel($short = FALSE) {
+    $this->options['field_name'] = $this->options['source_field'];
+
     $label = parent::adminLabel();
 
-    if ($this->options['source_field'] != '') {
-      return $label . ' (' . $this->options['source_field'] . ')';
-    }
+    unset($this->options['field_name']);
 
     return $label;
   }
@@ -62,35 +78,18 @@ class Source extends FieldPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function render(ResultRow $row) {
+  public function render(ResultRow $values) {
+    // Get the source field.
     $source_field = $this->options['source_field'];
 
-    if (isset($row->_source) && is_array($row->_source)) {
-      return $this->getNestedValue($source_field, $row->_source);
-    }
+    // Add the prefix.
+    $this->options['field_name'] = $this->prefix . $source_field;
+    // Get the value.
+    $result = parent::render($values);
+    // Unset the "field_name" option.
+    unset($this->options['field_name']);
 
-    return '';
-  }
-
-  /**
-   * Returns the value from the nested array.
-   *
-   * @param $key
-   * @param array $data
-   * @param $default
-   *
-   * @return mixed|null
-   */
-  protected function getNestedValue($key, array $data = [], $default = '') {
-    $parts = explode($this->nestedValueSeparator, $key);
-
-    if (count($parts) == 1) {
-      return isset($data[$key]) ? $data[$key] : $default;
-    }
-    else {
-      $value = NestedArray::getValue($data, $parts, $key_exists);
-      return $key_exists ? $value : $default;
-    }
+    return $result;
   }
 
 }
