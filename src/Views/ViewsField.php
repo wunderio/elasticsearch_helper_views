@@ -26,7 +26,9 @@ use Drupal\elasticsearch_helper\Elasticsearch\Index\FieldDefinition;
  *
  * Index: pages
  * Mapping: {
- *   "label": "text",
+ *   "label": {
+ *      "type": "text"
+ *    },
  *   "user": {
  *     "properties": {
  *       "name": {
@@ -341,7 +343,7 @@ class ViewsField {
     // Get a list of types that are scalar.
     $scalar_types = array_filter($this->getTypeScalarity());
 
-    // Do not provide the Views data if there are no scalar types available.
+    // Do not provide the Views data if the field is not scalar.
     if (empty($scalar_types)) {
        return [];
     }
@@ -360,16 +362,21 @@ class ViewsField {
       return $type->getDataType();
     }, $this->getTypes());
 
+    $title = sprintf('%s (%s)', $label, $canonical_name);
+    $help = t('Appears in the following index plugins: <small><code>@indices</code></small>.<br />Type: <small>@types.</small>', [
+      '@types' => implode(', ', $data_types),
+      '@indices' => implode(', ', $this->getIndexPluginIds()),
+    ]);
+
+    $real_field = sprintf('_source.%s', $canonical_name);
+
     $data[$machine_name] = [
       'field' => [
-        'id' => 'elasticsearch_source',
-        'source_field' => $canonical_name,
-        'title' => sprintf('%s (%s)', $label, $canonical_name),
+        'id' => 'elasticsearch_document_field',
+        'field_name' => $real_field,
+        'title' => $title,
         'title short' => $label,
-        'help' => t('Appears in the following index plugins: <small><code>@indices</code></small>.<br />Type: <small>@types.</small>', [
-          '@types' => implode(', ', $data_types),
-          '@indices' => implode(', ', $this->getIndexPluginIds()),
-        ]),
+        'help' => $help,
       ],
     ];
 

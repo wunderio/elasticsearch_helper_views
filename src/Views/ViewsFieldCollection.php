@@ -9,12 +9,32 @@ namespace Drupal\elasticsearch_helper_views\Views;
  */
 class ViewsFieldCollection {
 
+  /**
+   * The list of fields.
+   *
+   * @var \Drupal\elasticsearch_helper_views\Views\ViewsField[]
+   */
   protected $fields = [];
 
+  /**
+   * Creates an instance of the class.
+   *
+   * @return static
+   *   The instance of the class.
+   */
   public static function create() {
     return new static();
   }
 
+  /**
+   * Returns a field by its canonical name.
+   *
+   * @param string $canonical_name
+   *   The canonical name of the field.
+   *
+   * @return \Drupal\elasticsearch_helper_views\Views\ViewsField|null
+   *   The field object or NULL if the field does not exist.
+   */
   public function getField($canonical_name) {
     if ($this->fieldExists($canonical_name)) {
       return $this->fields[$canonical_name];
